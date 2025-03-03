@@ -6,7 +6,7 @@ The **Tracking Views Repository** is responsible for interacting with Redis to t
 
 ## Classes Added
 
-### 1. **TrackingViews (Middleware)**
+### 1. **TrackingViews (Global Middleware)**
 
 This middleware is responsible for tracking the views for each incoming request. It uses the `TrackingViewsRepository` to increment the view count for the endpoint being accessed. The middleware is globally applied to all routes.
 
