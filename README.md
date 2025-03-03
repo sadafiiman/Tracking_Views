@@ -11,7 +11,7 @@ To get the application running locally, you can use the provided `run.sh` script
 1. **Run the `run.sh` Script**:
    To start the application and wait for it to be ready, run the following command in your terminal:
 
-   [**Run the Application**](./run.sh)
+   [**See run.sh file**](./run.sh)
 
    The script will:
     - IMPORTANT: Set up DNS configurations if needed for Docker.
@@ -19,6 +19,15 @@ To get the application running locally, you can use the provided `run.sh` script
     - Wait for the application to be ready on `localhost:8000`.
 
 ---
+
+## Docker Configuration
+
+In the `Dockerfile`, the **working directory** is set to `/var/www/tracking-views/` as shown below:
+
+```dockerfile
+WORKDIR /var/www/tracking-views
+```
+
 
 ## Available Routes
 
