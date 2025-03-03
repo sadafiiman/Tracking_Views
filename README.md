@@ -1,8 +1,8 @@
-# Tracking Views Repository
+# Tracking Views
 
 ## Overview
 
-The **Tracking Views Repository** is responsible for interacting with Redis to track and manage view counts for various application endpoints. The repository uses Redis sorted sets to store and retrieve view statistics efficiently. It abstracts the logic of storing and fetching endpoint view counts, making it easier to manage the view-tracking functionality.
+The **Tracking Views** is responsible for interacting with Redis to track and manage view counts for various application endpoints. The repository uses Redis sorted sets to store and retrieve view statistics efficiently. It abstracts the logic of storing and fetching endpoint view counts, making it easier to manage the view-tracking functionality.
 
 ## Running the Application
 
