@@ -49,4 +49,38 @@ The data is stored under the key `view-report`, where the **member** is the endp
 
 ---
 
-This structure ensures that the tracking system is efficient, scalable, and easy to manage by centralizing Redis interactions within a dedicated repository and keeping the middleware's logic simple and focused on handling the view incrementing functionality.
+## Running the Application
+
+To get the application running locally, you can use the provided `run.sh` script. This script will handle the setup and ensure the application is ready to serve on `localhost:8000`.
+
+1. **Run the `run.sh` Script**:
+   To start the application and wait for it to be ready, run the following command in your terminal:
+
+   [**Run the Application**](./run.sh)
+
+   The script will:
+    - IMPORTANT: Set up DNS configurations if needed for Docker.
+    - Build and start the Docker containers.
+    - Wait for the application to be ready on `localhost:8000`.
+
+---
+
+## Available Routes
+
+Here are the available routes in the application. You can click on them to open in a new tab:
+
+- [**Home**](http://localhost:8000/)
+- [**Report**](http://localhost:8000/report)
+- [**Hello World**](http://localhost:8000/hello-world)
+
+These routes will trigger specific actions in the application, such as displaying the homepage, generating a view report, and showing a simple "Hello World" message.
+
+---
+
+### Example Route Handling
+
+- `Route::get('/', [EndpointViewController::class, 'home']);`: Displays the homepage.
+- `Route::get('/report', [EndpointViewController::class, 'report']);`: Displays the view report.
+- `Route::get('/hello-world', [EndpointViewController::class, 'helloWorld']);`: Displays a simple "Hello World" message.
+
+---
