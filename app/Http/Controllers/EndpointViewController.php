@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\TrackingViewsRepository;
 use Illuminate\Http\JsonResponse;
 
-class TestController extends Controller
+class EndpointViewController extends Controller
 {
     protected TrackingViewsRepository $trackingViewRepository;
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\EndpointViewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [TestController::class, 'home']);
-Route::get('/report', [TestController::class, 'report']);
-Route::get('/hello-world', [TestController::class, 'helloWorld']);
+Route::get('/', [EndpointViewController::class, 'home']);
+Route::get('/report', [EndpointViewController::class, 'report']);
+Route::get('/hello-world', [EndpointViewController::class, 'helloWorld']);
