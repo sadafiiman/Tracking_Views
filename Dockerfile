@@ -33,6 +33,8 @@ RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/lo
 
 RUN composer install
 
+RUN php artisan optimize
+
 EXPOSE 80
 
 CMD ["apache2-foreground"]
