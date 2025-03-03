@@ -4,7 +4,7 @@ services:
     # PHP & Laravel
     app:
         build: .
-        container_name: Tracking-views
+        container_name: Tracking-views-php-apache
         ports:
             - "8000:80"
         volumes:
