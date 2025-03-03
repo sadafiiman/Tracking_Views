@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\TrackingViewsRepository;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\View;
 
 class EndpointViewController extends Controller
 {
@@ -22,9 +23,8 @@ class EndpointViewController extends Controller
     /**
      * Home endpoint
      *
-     * @return string
      */
-    public function home(): string
+    public function home()
     {
         return view('welcome');
     }
