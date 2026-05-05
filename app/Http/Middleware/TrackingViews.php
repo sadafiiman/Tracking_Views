@@ -2,37 +2,34 @@
 
 namespace App\Http\Middleware;
 
-use App\Repositories\TrackingViewsRepository;
+use App\Jobs\TrackViewJob;
 use Closure;
 use Illuminate\Http\Request;
 
 class TrackingViews
 {
-    protected TrackingViewsRepository $trackingViewsRepository;
+    public function __construct() {}
 
-    /**
-     * Constructor to inject the RedisRepository
-     *
-     * @param TrackingViewsRepository $trackingViewsRepository
-     */
-    public function __construct(TrackingViewsRepository $trackingViewsRepository)
-    {
-        $this->trackingViewsRepository = $trackingViewsRepository;
-    }
-
-    /**
-     * Handle an incoming request.
-     *
-     * @param Request $request
-     * @param Closure $next
-     * @return mixed
-     */
     public function handle(Request $request, Closure $next)
     {
-        $endpoint = '/' . ltrim($request->path(), '/');
+        $response = $next($request);
 
-        $this->trackingViewsRepository->incrementEndpointView($endpoint);
+        if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
+            $endpoint = '/' . ltrim($request->path(), '/');
 
-        return $next($request);
+            if ($this->shouldTrack($request, $response)) {
+                dispatch(new TrackViewJob($endpoint));
+            }
+        }
+
+        return $response;
+    }
+
+    private function shouldTrack(Request $request, $response): bool
+    {
+        return $request->isMethod('GET')
+            && $response->getStatusCode() >= 200
+            && $response->getStatusCode() < 300
+            && !str_starts_with($request->path(), 'api/internal');
     }
 }
