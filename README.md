@@ -1,87 +1,151 @@
-# Tracking Views
+# 📊 Tracking Views System
 
-## Overview
-
-The **Tracking Views** is responsible for interacting with Redis to track and manage view counts for various application endpoints. The repository uses Redis sorted sets to store and retrieve view statistics efficiently. It abstracts the logic of storing and fetching endpoint view counts, making it easier to manage the view-tracking functionality.
-
-## Running the Application
-
-To get the application running locally, you can use the provided `run.sh` script. This script will handle the setup and ensure the application is ready to serve on `localhost:8000`.
-
-1. **Run the `run.sh` Script**:
-   To start the application and wait for it to be ready, run the following command in your terminal:
-
-   [**See run.sh file**](./run.sh)
-
-   The script will:
-    - IMPORTANT: Set up DNS configurations if needed for Docker.
-    - Build and start the Docker containers.
-    - Wait for the application to be ready on `localhost:8000`.
+A lightweight Redis-based analytics system built with Laravel to track and report endpoint usage using Redis Sorted Sets.
 
 ---
 
-## Docker Configuration
+## 🚀 Overview
 
-In the `Dockerfile`, the **working directory** is set to `/var/www/tracking-views/` as shown below:
+This project implements a high-performance view tracking system that automatically records and aggregates endpoint visits in real-time.
 
-```dockerfile
-WORKDIR /var/www/tracking-views
+It uses:
+
+- Laravel Middleware for automatic tracking
+- Redis Sorted Sets for efficient counters and ranking
+- Repository pattern for clean data access
+
+Each request is tracked as:
+- endpoint → view count (score)
+
+
+stored in Redis under a sorted set.
+
+---
+
+## 🧱 Architecture
+
+HTTP Request
+↓
+TrackingViews Middleware
+↓
+TrackingViewsRepository
+↓
+Redis Sorted Set (view-report)
+
+---
+
+
+---
+
+## ⚡ Features
+
+- Automatic endpoint tracking via middleware
+- Real-time view counting
+- Redis Sorted Set for ranking
+- Clean repository abstraction
+- JSON reporting endpoint
+- Lightweight and scalable design
+
+---
+
+## 🐳 Running the Application
+
+### 1. Start with Docker
+
+```bash
+docker compose up --build
 ```
 
+### 🌐 Available Routes
 
-## Available Routes
+| Route          | Description           |
+| -------------- | --------------------- |
+| `/`            | Home page             |
+| `/report`      | View analytics report |
+| `/hello-world` | Test endpoint         |
 
-Here are the available routes in the application. You can click on them to open in a new tab:
-
-- [**Home**](http://localhost:8000/) : Displays the homepage
-- [**Report**](http://localhost:8000/report) : Displays the view report
-- [**Hello World**](http://localhost:8000/hello-world) : Displays a simple "Hello World" message.
-
-These routes will trigger specific actions in the application, such as displaying the homepage, generating a view report, and showing a simple "Hello World" message.
 
 ---
 
-## Classes Added
+## 📦 Core Components
 
-### 1. **TrackingViews (Global Middleware)**
+1. Middleware: TrackingViews
 
-This middleware is responsible for tracking the views for each incoming request. It uses the `TrackingViewsRepository` to increment the view count for the endpoint being accessed. The middleware is globally applied to all routes.
+- Automatically tracks every incoming request.
 
-- **Purpose**: Track views for each endpoint on every request.
-- **Flow**:
-    - Extracts the endpoint from the request path.
-    - Calls `incrementEndpointView` method from `TrackingViewsRepository` to increment the view count for the given endpoint.
+- Responsibilities :
 
-### 2. **TrackingViewsRepository (Repository)**
+Extract endpoint from request
+Increment view count
+Send data to repository
 
-The `TrackingViewsRepository` class interacts directly with Redis to manage view counts. It provides methods for incrementing the view count of an endpoint and fetching the view reports for all endpoints.
+- Flow:
 
-- **Purpose**: Encapsulate the Redis logic for managing endpoint views.
-- **Methods**:
-    - **incrementEndpointView(string $endpoint): void**: Increments the view count for the provided endpoint using Redis' `zincrby` command.
-    - **getAllViewsReport(): array**: Fetches all endpoint view counts from the Redis sorted set `view-report`, ordered by the view count in descending order.
+Request → Middleware → Repository → Redis
 
-## Flow of Operations
+2. Repository: TrackingViewsRepository
 
-1. **Tracking Views Middleware**:
-    - When a request hits the Laravel application, the `TrackingViews` middleware is triggered.
-    - The middleware extracts the endpoint from the URL and calls `incrementEndpointView` method in the repository to increment the view count by 1.
+- Handles Redis operations.
 
-2. **TrackingViewsRepository**:
-    - The `TrackingViewsRepository` handles the Redis interaction. It stores view counts in a Redis sorted set named `view-report`, where:
-        - Each endpoint is a **member**.
-        - The view count is the **score**.
-    - It uses the Redis command `zincrby` to increment the score of an endpoint, and `zrevrange` to fetch all endpoints sorted by view count.
+-Responsibilities:
 
-3. **Fetching Reports**:
-    - The `getAllViewsReport` method in the repository can be used to fetch all endpoints along with their respective view counts.
-    - The `report` method in the controller returns a JSON response containing the sorted list of endpoints with view counts.
+- Increment endpoint views
+- Fetch ranked reports
+- Redis Structure
+- Key: view-report
 
-### Redis Sorted Set Usage
-
-- **Sorted Sets** in Redis are used to efficiently store the endpoints and their view counts.
-- Redis allows for fast increments (`zincrby`) and retrieving sorted data (`zrevrange`), making it ideal for this use case.
-
-The data is stored under the key `view-report`, where the **member** is the endpoint (URL), and the **score** is the view count for that endpoint.
+- member = endpoint (/home)
+- score  = view count
+- Redis Commands Used
+- ZINCRBY → increment view count
+- ZREVRANGE → fetch ranked data
 
 ---
+
+## 📊 Report Endpoint
+
+- Returns ranked endpoint statistics:
+
+```bash
+[
+{
+"endpoint": "/home",
+"views": 120
+},
+{
+"endpoint": "/report",
+"views": 45
+}
+]
+```
+---
+## ⚙️ Design Principles
+
+- Separation of concerns
+- Middleware-based tracking
+- Repository abstraction
+- Infrastructure isolation
+- High-performance Redis usage
+
+---
+
+## 🚀 Future Improvements
+
+- Time-based analytics (hourly/daily)
+- Queue-based tracking (async)
+- User/IP tracking
+- Rate limiting system
+- Admin dashboard (Filament/Vue)
+- Distributed Redis scaling
+
+
+---
+
+## 🧠 Summary
+
+### A lightweight analytics system demonstrating:
+
+- Real-time tracking
+- Redis sorted set usage
+- Clean Laravel architecture
+- Scalable design patterns
