@@ -1,40 +1,45 @@
-FROM php:8.2-apache
+FROM php:8.3-fpm-alpine
 
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    unzip \
+# System dependencies
+RUN apk add --no-cache \
+    bash \
     git \
-    libicu-dev \
-    libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
+    curl \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    zip \
+    unzip \
+    oniguruma-dev \
+    icu-dev \
+    libzip-dev
 
-RUN pecl install redis && \
-    docker-php-ext-enable redis
+# PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        mbstring \
+        zip \
+        gd \
+        intl \
+        opcache
 
-RUN a2enmod rewrite
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/tracking-views
+# Set working directory
+WORKDIR /var/www
 
+# Copy project
 COPY . .
 
-RUN chown -R www-data:www-data /var/www/tracking-views
+# Install dependencies (fast + production ready)
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-RUN find /var/www/tracking-views -type d -exec chmod 755 {} \; \
-    && find /var/www/tracking-views -type f -exec chmod 644 {} \;
+# Permissions
+RUN chown -R www-data:www-data /var/www
 
-RUN sed -i 's|/var/www/html|/var/www/tracking-views/public|' /etc/apache2/sites-available/000-default.conf
-RUN sed -i 's|<Directory /var/www/html>|<Directory /var/www/tracking-views/public>|' /etc/apache2/sites-available/000-default.conf \
-    && sed -i 's|AllowOverride None|AllowOverride All|' /etc/apache2/apache2.conf
+EXPOSE 9000
 
-RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
-
-RUN composer install
-
-RUN php artisan optimize
-
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+CMD ["php-fpm"]
