@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\TrackingViewsRepository;
+use App\Repositories\RedisTrackingViewsRepository;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\View;
 
 class EndpointViewController extends Controller
 {
-    protected TrackingViewsRepository $trackingViewRepository;
+    private RedisTrackingViewsRepository $redisTrackingViewsRepository;
 
     /**
      * Constructor to inject the RedisRepository
      *
-     * @param TrackingViewsRepository $trackingViewRepository
+     * @param RedisTrackingViewsRepository $redisTrackingViewsRepository
      */
-    public function __construct(TrackingViewsRepository $trackingViewRepository)
+    public function __construct(RedisTrackingViewsRepository $redisTrackingViewsRepository)
     {
-        $this->trackingViewRepository = $trackingViewRepository;
+        $this->redisTrackingViewsRepository = $redisTrackingViewsRepository;
     }
 
     /**
@@ -41,7 +40,7 @@ class EndpointViewController extends Controller
      */
     public function report(): JsonResponse
     {
-        $viewReports = $this->trackingViewRepository->getAllViewsReport();
+        $viewReports = $this->redisTrackingViewsRepository->getReport();
 
         if (empty($viewReports)) {
             return response()->json(['message' => 'No view reports found']);
