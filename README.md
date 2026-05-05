@@ -25,11 +25,11 @@ stored in Redis under a sorted set.
 ## 🧱 Architecture
 
 HTTP Request
-↓
+->
 TrackingViews Middleware
-↓
+->
 TrackingViewsRepository
-↓
+->
 Redis Sorted Set (view-report)
 
 ---
